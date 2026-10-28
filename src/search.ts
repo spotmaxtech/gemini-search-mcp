@@ -1,5 +1,6 @@
 import type { Config } from "./config.js";
 import { buildCitedText, extractSources, formatSources } from "./citations.js";
+import { resolveSources } from "./resolve.js";
 
 export async function googleSearch(
   config: Config,
@@ -9,6 +10,7 @@ export async function googleSearch(
   const signals = [AbortSignal.timeout(config.timeoutMs)];
   if (signal) signals.push(signal);
 
+  const geminiStarted = Date.now();
   const response = await config.client.models.generateContent({
     model: config.model,
     contents: [{ role: "user", parts: [{ text: query }] }],
@@ -17,6 +19,7 @@ export async function googleSearch(
       abortSignal: AbortSignal.any(signals),
     },
   });
+  const geminiMs = Date.now() - geminiStarted;
 
   const candidate = response.candidates?.[0];
   const parts = candidate?.content?.parts ?? [];
@@ -30,5 +33,14 @@ export async function googleSearch(
     );
   }
 
-  return text + formatSources(extractSources(metadata?.groundingChunks));
+  let sources = extractSources(metadata?.groundingChunks);
+  let resolveInfo = "resolve skipped";
+  if (config.resolveSourceUrls && sources.length > 0) {
+    const started = Date.now();
+    sources = await resolveSources(sources, signal);
+    resolveInfo = `resolve ${Date.now() - started}ms`;
+  }
+  console.error(`gemini ${geminiMs}ms, ${resolveInfo} (${sources.length} sources)`);
+
+  return text + formatSources(sources);
 }

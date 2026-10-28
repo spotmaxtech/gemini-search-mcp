@@ -3,11 +3,12 @@ import { GoogleGenAI } from "@google/genai";
 export interface Config {
   model: string;
   timeoutMs: number;
+  resolveSourceUrls: boolean;
   client: GoogleGenAI;
 }
 
-const DEFAULT_MODEL = "gemini-2.5-flash";
-const DEFAULT_TIMEOUT_MS = 60_000;
+const DEFAULT_MODEL = "gemini-3.5-flash-lite";
+const DEFAULT_TIMEOUT_MS = 30_000;
 
 let cached: Config | undefined;
 
@@ -21,6 +22,9 @@ export function getConfig(env: NodeJS.ProcessEnv = process.env): Config {
 
   const model = env.GEMINI_MODEL || DEFAULT_MODEL;
   const timeoutMs = parseTimeout(env.GEMINI_TIMEOUT_MS);
+  const resolveSourceUrls = !["false", "0"].includes(
+    (env.RESOLVE_SOURCE_URLS ?? "").toLowerCase(),
+  );
 
   let client: GoogleGenAI;
   if (env.GEMINI_PROVIDER === "vertex") {
@@ -45,7 +49,7 @@ export function getConfig(env: NodeJS.ProcessEnv = process.env): Config {
     client = new GoogleGenAI({ apiKey });
   }
 
-  cached = { model, timeoutMs, client };
+  cached = { model, timeoutMs, resolveSourceUrls, client };
   return cached;
 }
 

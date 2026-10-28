@@ -12,7 +12,7 @@ function fakeConfig(response: unknown, captured: { req?: any } = {}): Config {
       },
     },
   } as unknown as GoogleGenAI;
-  return { model: "test-model", timeoutMs: 1000, client };
+  return { model: "test-model", timeoutMs: 1000, resolveSourceUrls: true, client };
 }
 
 describe("googleSearch", () => {

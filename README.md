@@ -55,6 +55,7 @@ claude mcp add gemini-search -e GEMINI_API_KEY=your-api-key -- npx -y github:spo
 | `VERTEX_LOCATION` | `us-central1` | Vertex AI location. |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model to use. |
 | `GEMINI_TIMEOUT_MS` | `60000` | Request timeout in milliseconds. |
+| `RESOLVE_SOURCE_URLS` | `true` | Replace Google grounding redirect links with the real page URLs (reads only the redirect header, 3s timeout per link). Set to `false` to skip. |
 
 Vertex AI uses Application Default Credentials (e.g. `gcloud auth application-default login`).
 
