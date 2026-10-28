@@ -1,0 +1,45 @@
+{
+  "name": "gemini-search-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that performs Google Search via Gemini grounding",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spotmaxtech/gemini-search-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "gemini",
+    "google-search"
+  ],
+  "bin": {
+    "gemini-search-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "inspect": "npx -y @modelcontextprotocol/inspector ${GEMINI_API_KEY:+-e GEMINI_API_KEY=$GEMINI_API_KEY} ${GEMINI_PROVIDER:+-e GEMINI_PROVIDER=$GEMINI_PROVIDER} ${VERTEX_PROJECT_ID:+-e VERTEX_PROJECT_ID=$VERTEX_PROJECT_ID} ${VERTEX_LOCATION:+-e VERTEX_LOCATION=$VERTEX_LOCATION} ${GEMINI_MODEL:+-e GEMINI_MODEL=$GEMINI_MODEL} ${GEMINI_TIMEOUT_MS:+-e GEMINI_TIMEOUT_MS=$GEMINI_TIMEOUT_MS} node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@google/genai": "^1.31.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0"
+  }
+}
